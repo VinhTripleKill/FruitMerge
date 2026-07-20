@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private bool isPaused;
     [SerializeField] private bool gameplayLocked = true;
     [SerializeField] private float timeWait = 2f;
+    [SerializeField] private ThrowController throwController;
+    [SerializeField] private FruitSpawner spawner;
     private bool waitingEndUI;
 
     public bool IsGameOver => isGameOver;
@@ -54,15 +56,12 @@ public class GameManager : MonoBehaviour
         ScoreManager.Instance.StartPlayTime();
 
         UIManager.Instance.ShowGameplayUI();
-        ThrowController throwController =
-    FindFirstObjectByType<ThrowController>();
+        
 
         if (throwController != null)
         {
             throwController.ResetPosition();
         }
-        FruitSpawner spawner =
-            FindFirstObjectByType<FruitSpawner>();
 
         if (spawner != null)
         {
@@ -88,9 +87,6 @@ public class GameManager : MonoBehaviour
 
         UIManager.Instance.ShowMenu();
 
-        FruitSpawner spawner =
-            FindFirstObjectByType<FruitSpawner>();
-
         if (spawner != null)
         {
             spawner.ClearAllFruits();
@@ -101,54 +97,44 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        if (isGameOver)
-            return;
+        if (isGameOver) return;
 
         isGameOver = true;
 
         ScoreManager.Instance.StopPlayTime();
 
-        StartCoroutine(
-            WaitScoreStableThenShowUI(false)
-        );
+        StartCoroutine(WaitScoreStableThenShowUI(false));
     }
 
     // ========= GAME WIN =========
 
     public void GameWin()
     {
-        if (isGameWin)
-            return;
+        if (isGameWin) return;
 
         isGameWin = true;
 
         ScoreManager.Instance.StopPlayTime();
 
-        StartCoroutine(
-            WaitScoreStableThenShowUI(true)
+        StartCoroutine( WaitScoreStableThenShowUI(true)
         );
     }
 
     // ========= WAIT SCORE =========
 
-    private IEnumerator WaitScoreStableThenShowUI(
-        bool isWin
-    )
+    private IEnumerator WaitScoreStableThenShowUI(bool isWin)
     {
-        if (waitingEndUI)
-            yield break;
+        if (waitingEndUI) yield break;
 
         waitingEndUI = true;
 
         while (true)
         {
-            int oldScore =
-                ScoreManager.Instance.Score;
+            int oldScore = ScoreManager.Instance.Score;
 
             yield return new WaitForSeconds(timeWait);
 
-            if (oldScore ==
-                ScoreManager.Instance.Score)
+            if (oldScore == ScoreManager.Instance.Score)
             {
                 break;
             }
@@ -163,13 +149,11 @@ public class GameManager : MonoBehaviour
 
     public void TogglePause()
     {
-        if (gameplayLocked)
-            return;
+        if (gameplayLocked) return;
 
         isPaused = !isPaused;
 
-        Time.timeScale =
-            isPaused ? 0f : 1f;
+        Time.timeScale = isPaused ? 0f : 1f;
 
         if (isPaused)
         {
@@ -185,8 +169,7 @@ public class GameManager : MonoBehaviour
 
     public void ResumeGame()
     {
-        if (gameplayLocked)
-            return;
+        if (gameplayLocked) return;
 
         isPaused = false;
 

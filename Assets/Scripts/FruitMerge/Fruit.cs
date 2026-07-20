@@ -8,33 +8,25 @@ public class Fruit : MonoBehaviour
 
     public int ScoreMerge => scoreMerge;
     [SerializeField] private bool canMerge = true;
-
+    private MergeSystem mergeSystem;
     private bool isMerged = false;
 
-    private MergeSystem mergeSystem;
+    
 
     public int FruitID => fruitID;
 
     public bool CanMerge => canMerge;
 
     public bool IsMerged => isMerged;
-
     private void Awake()
     {
-        mergeSystem = FindFirstObjectByType<MergeSystem>();
+        mergeSystem = FindAnyObjectByType<MergeSystem>();
     }
-
-    /// <summary>
-    /// Gán ID cho fruit
-    /// </summary>
     public void SetFruitID(int id)
     {
         fruitID = id;
     }
 
-    /// <summary>
-    /// Đánh dấu fruit đã merge
-    /// </summary>
     public void SetMerged(bool value)
     {
         isMerged = value;
@@ -46,15 +38,13 @@ public class Fruit : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            Rigidbody2D rb =
-                GetComponent<Rigidbody2D>();
+            Rigidbody2D rb = GetComponent<Rigidbody2D>();
 
             if (rb != null)
             {
                 rb.linearVelocity = Vector2.zero;
                 rb.angularVelocity = 0f;
-                rb.bodyType =
-                    RigidbodyType2D.Kinematic;
+                rb.bodyType = RigidbodyType2D.Kinematic;
             }
 
             GameManager.Instance.GameOver();
@@ -62,20 +52,15 @@ public class Fruit : MonoBehaviour
 
         // ===== MERGE =====
 
-        if (!canMerge)
-            return;
+        if (!canMerge) return;
 
-        Fruit otherFruit =
-            collision.gameObject.GetComponent<Fruit>();
+        Fruit otherFruit = collision.gameObject.GetComponent<Fruit>();
 
-        if (otherFruit == null)
-            return;
+        if (otherFruit == null) return;
 
-        if (otherFruit.FruitID != fruitID)
-            return;
+        if (otherFruit.FruitID != fruitID) return;
 
-        if (otherFruit.IsMerged || isMerged)
-            return;
+        if (otherFruit.IsMerged || isMerged) return;
 
         mergeSystem.Merge(this, otherFruit);
     }

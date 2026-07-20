@@ -1,9 +1,8 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class FruitBoxClickInput :
-    MonoBehaviour,
-    IPointerDownHandler
+
+public class FruitBoxClickInput : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
     [Header("References")]
     [SerializeField] private Camera mainCamera;
@@ -12,34 +11,34 @@ public class FruitBoxClickInput :
 
     [SerializeField] private FruitSpawner fruitSpawner;
 
-    public void OnPointerDown(
-        PointerEventData eventData
-    )
+    private bool isHolding;
+    public void OnPointerDown(PointerEventData eventData)
     {
-        if (GameManager.Instance.GameplayLocked)
-            return;
+    if (GameManager.Instance.GameplayLocked) return;
+    if (GameManager.Instance.IsPaused) return;
+    if (GameManager.Instance.IsGameOver) return;
+    if (GameManager.Instance.IsGameWin) return;
 
-        if (GameManager.Instance.IsPaused)
-            return;
+    isHolding = true;
 
-        if (GameManager.Instance.IsGameOver)
-            return;
+    Vector3 worldPos = mainCamera.ScreenToWorldPoint(eventData.position);
 
-        if (GameManager.Instance.IsGameWin)
-            return;
-
-        Vector3 screenPos =
-            eventData.position;
-
-        Vector3 worldPos =
-            mainCamera.ScreenToWorldPoint(
-                screenPos
-            );
-
-        throwController.TeleportToX(
-            worldPos.x
-        );
-
+    throwController.TeleportToX(worldPos.x);
+    }
+    public void OnDrag(PointerEventData eventData)
+    {
+        if (!isHolding) return;
+    
+        Vector3 worldPos = mainCamera.ScreenToWorldPoint(eventData.position);
+    
+        throwController.TeleportToX(worldPos.x);
+    }
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        if (!isHolding) return;
+    
+        isHolding = false;
+    
         fruitSpawner.MobileThrow();
     }
 }

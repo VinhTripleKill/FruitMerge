@@ -34,21 +34,14 @@ public class ThrowController : MonoBehaviour
 
     private InputAction pauseAction;
 
-    private InputAction clickAction;
 
     private float mobileInputX;
 
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
-
-        moveAction =
-            playerInput.actions["Move"];
-
-        pauseAction =
-            playerInput.actions["PauseGame"];
-        clickAction =
-    playerInput.actions["Click"];
+        moveAction = playerInput.actions["Move"];
+        pauseAction = playerInput.actions["PauseGame"];
     }
 
     private void Update()
@@ -59,69 +52,41 @@ public class ThrowController : MonoBehaviour
 
         PauseInputCheck();
 
-        ClickInputCheck();
+        
     }
-    private void ClickInputCheck()
-    {
-        if (clickAction.WasPressedThisFrame())
-        {
-            AudioManager.Instance.PlayClickSound();
-        }
-    }
+
     private void Move()
     {
-        if (GameManager.Instance.IsPaused)
-            return;
+        if (GameManager.Instance.IsPaused) return;
 
-        Vector2 input =
-            moveAction.ReadValue<Vector2>();
+        Vector2 input = moveAction.ReadValue<Vector2>();
 
-        float finalInputX =
-            input.x + mobileInputX;
+        float finalInputX = input.x + mobileInputX;
 
         Vector3 pos = transform.position;
 
-        pos.x +=
-            finalInputX *
-            moveSpeed *
-            Time.deltaTime;
+        pos.x += finalInputX * moveSpeed * Time.deltaTime;
 
-        pos.x = Mathf.Clamp(
-            pos.x,
-            leftLimit.position.x + padding,
-            rightLimit.position.x - padding
-        );
+        pos.x = Mathf.Clamp( pos.x, leftLimit.position.x + padding, rightLimit.position.x - padding);
 
         transform.position = pos;
     }
 
     private void DrawLine()
     {
-        if (lineRenderer == null ||
-            bottomFruitBox == null)
-            return;
+        if (lineRenderer == null || bottomFruitBox == null) return;
 
         lineRenderer.positionCount = 2;
 
-        lineRenderer.SetPosition(
-            0,
-            transform.position
-        );
+        lineRenderer.SetPosition( 0, transform.position);
 
-        lineRenderer.SetPosition(
-            1,
-            new Vector3(
-                transform.position.x,
-                bottomFruitBox.position.y,
-                transform.position.z
-            )
+        lineRenderer.SetPosition( 1, new Vector3( transform.position.x, bottomFruitBox.position.y, transform.position.z)
         );
     }
 
     private void PauseInputCheck()
     {
-        if (GameManager.Instance.GameplayLocked)
-            return;
+        if (GameManager.Instance.GameplayLocked) return;
 
         if (pauseAction.WasPressedThisFrame())
         {
@@ -155,9 +120,7 @@ public class ThrowController : MonoBehaviour
     }
     public void ResetPosition()
     {
-        float centerX =
-            (leftLimit.position.x +
-             rightLimit.position.x) / 2f;
+        float centerX = (leftLimit.position.x +  rightLimit.position.x) / 2f;
 
         Vector3 pos = transform.position;
 
@@ -167,11 +130,7 @@ public class ThrowController : MonoBehaviour
     }
     public void TeleportToX(float targetX)
     {
-        float clampedX = Mathf.Clamp(
-            targetX,
-            leftLimit.position.x + padding,
-            rightLimit.position.x - padding
-        );
+        float clampedX = Mathf.Clamp( targetX, leftLimit.position.x + padding, rightLimit.position.x - padding);
 
         Vector3 pos = transform.position;
 

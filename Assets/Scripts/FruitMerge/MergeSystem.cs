@@ -4,39 +4,46 @@ public class MergeSystem : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private FruitManager fruitManager;
-
+    [SerializeField] private GameObject scorePopupCanvasPrefab;
     [Header("Merge Settings")]
     [SerializeField] private float destroyDelay = 0.05f;
+    private void SpawnScorePopup(Vector3 worldPos, int score, int fruitID)
+    {
+    if (scorePopupCanvasPrefab == null) return;
+
+    GameObject popupObj = Instantiate(scorePopupCanvasPrefab, worldPos, Quaternion.identity);
+
+    ScorePopup popup = popupObj.GetComponent<ScorePopup>();
+
+    if (popup != null)
+    {
+        popup.Setup(score, fruitID);
+    }
+    }
     public void Merge(Fruit fruitA, Fruit fruitB)
     {
         // Null check
-        if (fruitA == null || fruitB == null)
-            return;
+        if (fruitA == null || fruitB == null) return;
 
         // Tránh merge nhiều lần
-        if (fruitA.IsMerged || fruitB.IsMerged)
-            return;
+        if (fruitA.IsMerged || fruitB.IsMerged) return;
 
         // Khác loại thì bỏ qua
-        if (fruitA.FruitID != fruitB.FruitID)
-            return;
+        if (fruitA.FruitID != fruitB.FruitID) return;
 
         int currentID = fruitA.FruitID;
 
         // Đánh dấu đã merge
         fruitA.SetMerged(true);
         fruitB.SetMerged(true);
+        
+        Vector3 mergePos = (fruitA.transform.position + fruitB.transform.position) * 0.5f;
+
         AudioManager.Instance.PlayMergeSound();
-        // Add score
-        ScoreManager.Instance.AddScore(
-            fruitA.ScoreMerge
-        );
-
-        // Tính vị trí merge
-        Vector3 mergePos =
-            (fruitA.transform.position +
-             fruitB.transform.position) / 2f;
-
+         int nextID = currentID + 1;
+        
+        ScoreManager.Instance.AddScore(fruitA.ScoreMerge);
+        SpawnScorePopup(mergePos, fruitA.ScoreMerge, nextID);
         // Nếu là fruit cuối cùng
         if (currentID >= fruitManager.GetMaxFruitID())
         {
@@ -51,8 +58,7 @@ public class MergeSystem : MonoBehaviour
         }
 
         // Spawn fruit mới
-        int nextID = currentID + 1;
-
+       
         if (nextID >= fruitManager.GetMaxFruitID())
         {
             Debug.Log("Final Fruit Created!");
@@ -60,20 +66,14 @@ public class MergeSystem : MonoBehaviour
             GameManager.Instance.GameWin();
         }
 
-        GameObject nextFruitPrefab =
-            fruitManager.GetFruitPrefab(nextID);
+        GameObject nextFruitPrefab = fruitManager.GetFruitPrefab(nextID);
 
         if (nextFruitPrefab != null)
         {
-            GameObject newFruit = Instantiate(
-                nextFruitPrefab,
-                mergePos,
-                Quaternion.identity
-            );
+            GameObject newFruit = Instantiate( nextFruitPrefab, mergePos, Quaternion.identity);
 
             // Gán ID
-            Fruit fruit =
-                newFruit.GetComponent<Fruit>();
+            Fruit fruit = newFruit.GetComponent<Fruit>();
 
             if (fruit != null)
             {
@@ -85,4 +85,5 @@ public class MergeSystem : MonoBehaviour
         Destroy(fruitA.gameObject, destroyDelay);
         Destroy(fruitB.gameObject, destroyDelay);
     }
+   
 }

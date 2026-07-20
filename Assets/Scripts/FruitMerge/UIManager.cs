@@ -76,9 +76,7 @@ public class UIManager : MonoBehaviour
         if (timeCount == null)
             return;
 
-        timeCount.text =
-            ScoreManager.Instance
-            .GetFormattedPlayTime();
+        timeCount.text = ScoreManager.Instance .GetFormattedPlayTime();
     }
     // ========= MENU =========
 
@@ -157,15 +155,13 @@ public class UIManager : MonoBehaviour
 
     private void UpdateResultUI()
     {
-        ScoreManager scoreManager =
-            ScoreManager.Instance;
+        ScoreManager scoreManager = ScoreManager.Instance;
 
         foreach (TextMeshProUGUI text in resultScoreTexts)
         {
             if (text != null)
             {
-                text.text =
-                    scoreManager.Score.ToString();
+                text.text = scoreManager.Score.ToString();
             }
         }
 
@@ -173,8 +169,7 @@ public class UIManager : MonoBehaviour
         {
             if (text != null)
             {
-                text.text =
-                    scoreManager.ThrowCount.ToString();
+                text.text = scoreManager.ThrowCount.ToString();
             }
         }
 
@@ -182,8 +177,7 @@ public class UIManager : MonoBehaviour
         {
             if (text != null)
             {
-                text.text =
-                    scoreManager.GetFormattedPlayTime();
+                text.text = scoreManager.GetFormattedPlayTime();
             }
         }
     }

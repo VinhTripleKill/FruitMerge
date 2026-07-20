@@ -39,73 +39,51 @@ public class FruitSpawner : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.Instance.IsPaused)
-            return;
-        if (GameManager.Instance.GameplayLocked)
-            return;
+        if (GameManager.Instance.IsPaused) return;
+        if (GameManager.Instance.GameplayLocked) return;
         FollowThrowPos();
 
         ThrowFruit();
     }
 
-    /// <summary>
-    /// Fruit đang giữ sẽ follow ThrowPos
-    /// </summary>
     private void FollowThrowPos()
     {
-        if (currentFruit == null)
-            return;
+        if (currentFruit == null) return;
 
         currentFruit.transform.position = throwPos.position;
     }
 
-    /// <summary>
-    /// Thả fruit khi nhấn Space
-    /// </summary>
     private void ThrowFruit()
     {
-        if (GameManager.Instance.IsGameWin)
-            return;
+        if (GameManager.Instance.IsGameWin) return;
 
-        if (GameManager.Instance.IsGameOver)
-            return;
+        if (GameManager.Instance.IsGameOver) return;
 
-        if (!canThrow)
-            return;
+        if (!canThrow) return;
 
-        if (!throwAction.WasPressedThisFrame())
-            return;
+        if (!throwAction.WasPressedThisFrame()) return;
 
         PerformThrow();
     }
     private void GenerateNextFruit()
     {
-        nextFruitID = Random.Range(
-            minRandomFruitID,
-            maxRandomFruitID + 1
-        );
+        nextFruitID = Random.Range(minRandomFruitID,maxRandomFruitID + 1);
 
         // Update next fruit UI
-        GameObject prefab =
-            fruitManager.GetFruitPrefab(nextFruitID);
+        GameObject prefab = fruitManager.GetFruitPrefab(nextFruitID);
 
         if (prefab != null)
         {
-            SpriteRenderer sr =
-                prefab.GetComponent<SpriteRenderer>();
+            SpriteRenderer sr = prefab.GetComponent<SpriteRenderer>();
 
-            if (sr != null &&
-                UIManager.Instance.NextFruitVisual != null)
+            if (sr != null && UIManager.Instance.NextFruitVisual != null)
             {
-                UIManager.Instance.NextFruitVisual.sprite =
-                    sr.sprite;
+                UIManager.Instance.NextFruitVisual.sprite = sr.sprite;
             }
         }
     }
 
-    /// <summary>
-    /// Spawn fruit mới sau delay
-    /// </summary>
+
     private IEnumerator ReloadFruit()
     {
         canThrow = false;
@@ -117,36 +95,27 @@ public class FruitSpawner : MonoBehaviour
         canThrow = true;
     }
 
-    /// <summary>
-    /// Spawn fruit đang giữ
-    /// </summary>
+
     private void SpawnHoldingFruit()
     {
         
-        GameObject fruitPrefab =
-            fruitManager.GetFruitPrefab(nextFruitID);
+        GameObject fruitPrefab = fruitManager.GetFruitPrefab(nextFruitID);
 
-        if (fruitPrefab == null)
-            return;
+        if (fruitPrefab == null) return;
 
-        currentFruit = Instantiate(
-            fruitPrefab,
-            throwPos.position,
-            Quaternion.identity
+        currentFruit = Instantiate( fruitPrefab, throwPos.position, Quaternion.identity
         );
 
         // Gắn ID cho fruit
-        Fruit fruit =
-            currentFruit.GetComponent<Fruit>();
-
+        Fruit fruit =currentFruit.GetComponent<Fruit>();
+ 
         if (fruit != null)
         {
             fruit.SetFruitID(nextFruitID);
         }
 
         // Fruit đang giữ sẽ chưa bị physics
-        Rigidbody2D rb =
-            currentFruit.GetComponent<Rigidbody2D>();
+        Rigidbody2D rb =currentFruit.GetComponent<Rigidbody2D>();
 
         if (rb != null)
         {
@@ -160,25 +129,20 @@ public class FruitSpawner : MonoBehaviour
     }
     public void MobileThrow()
     {
-        if (GameManager.Instance.IsGameWin)
-            return;
+        if (GameManager.Instance.IsGameWin) return;
 
-        if (GameManager.Instance.IsGameOver)
-            return;
+        if (GameManager.Instance.IsGameOver) return;
 
-        if (!canThrow)
-            return;
+        if (!canThrow) return;
 
         PerformThrow();
     }
     private void PerformThrow()
     {
-        if (currentFruit == null)
-            return;
+        if (currentFruit == null) return;
 
-        Rigidbody2D rb =
-            currentFruit.GetComponent<Rigidbody2D>();
-
+        Rigidbody2D rb = currentFruit.GetComponent<Rigidbody2D>();
+ 
         if (rb != null)
         {
             rb.bodyType = RigidbodyType2D.Dynamic;
@@ -203,10 +167,7 @@ public class FruitSpawner : MonoBehaviour
     }
     public void ClearAllFruits()
     {
-        Fruit[] allFruits =
-            FindObjectsByType<Fruit>(
-                FindObjectsSortMode.None
-            );
+        Fruit[] allFruits = FindObjectsByType<Fruit>(FindObjectsSortMode.None);
 
         foreach (Fruit fruit in allFruits)
         {

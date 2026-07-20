@@ -67,8 +67,7 @@ public class ScoreManager : MonoBehaviour
 
     private void UpdatePlayTime()
     {
-        if (!isCountingTime)
-            return;
+        if (!isCountingTime) return;
 
         playTime += Time.deltaTime;
     }
@@ -85,20 +84,13 @@ public class ScoreManager : MonoBehaviour
 
     public string GetFormattedPlayTime()
     {
-        int hours =
-            Mathf.FloorToInt(playTime / 3600);
+        int hours = Mathf.FloorToInt(playTime / 3600);
 
-        int minutes =
-            Mathf.FloorToInt((playTime % 3600) / 60);
+        int minutes = Mathf.FloorToInt((playTime % 3600) / 60);
 
-        int seconds =
-            Mathf.FloorToInt(playTime % 60);
+        int seconds = Mathf.FloorToInt(playTime % 60);
 
-        return string.Format(
-            "{0:00}:{1:00}:{2:00}",
-            hours,
-            minutes,
-            seconds
+        return string.Format( "{0:00}:{1:00}:{2:00}", hours, minutes, seconds
         );
     }
 }
